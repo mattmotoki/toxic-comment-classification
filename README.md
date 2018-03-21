@@ -1,21 +1,27 @@
 ## 33rd Place Solution Using Embedding Imputation
-__Private LB: 0.9872, 33/4551__; Public LB: 0.9876, 45/4551
+
+This is the writeup and code for the [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge).  
+
+The task was to classify online comments into 6 categories: `toxic`, `severve_toxic`, `obscene`, `threat`, `insult`, `identity_hate`.  The competition metric was the average of the individual AUCs of each predicted class
+
 
 ### Summary of approach:
 
+__Private LB: 0.9872, 33/4551__; Public LB: 0.9876, 45/4551
+
 #### Embeddings: 
-   - fastText embeddings trained locally
+   - fastText embeddings trained locally on the competition data
    - Pretrained embeddings (with similiarity imputation): 
       * [fastText: wiki.en.bin](https://fasttext.cc/docs/en/english-vectors.html)
       * [GloVe: glove.840B.300d](https://nlp.stanford.edu/projects/glove/) 
       * [LexVec: lexvec.commoncrawl.300d.W.pos.vectors](https://github.com/alexandres/lexvec)
 
 #### Models: 
-   - `CapsuleNet    (*0.9860 private*,	0.9859 public)
-   - `RNN Version 1 (*0.9858 private*,	0.9863 public)
-   - `RNN Version 2 (*0.9856 private*,	0.9861 public)
-   - `Two Layer CNN (*0.9855 private*,	0.9861 public)
-   - `NB-SVM (*0.9813 private*, 0.9813 public)
+   - CapsuleNet    (*0.9860 private*,	0.9859 public)
+   - RNN Version 1 (*0.9858 private*,	0.9863 public)
+   - RNN Version 2 (*0.9856 private*,	0.9861 public)
+   - Two Layer CNN (*0.9855 private*,	0.9861 public)
+   - NB-SVM (*0.9813 private*, 0.9813 public)
 
 #### Esembling: 
    - Level 1a: Average 10 out-of-fold predictions (as high as *0.9860 private*, 0.9859 public)
