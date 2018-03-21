@@ -50,16 +50,16 @@ for w in missing_words:
 
 return {w: external[w] for w in local_words}
 ```
-With this technique, GloVe performed just as good if not better than the fastText with OOV prediction; LexVec performed slightly worse but added valuable diversity to ensembles. 
+With this technique, GloVe performed just as well if not better than the fastText with OOV prediction; LexVec performed slightly worse but added valuable diversity to ensembles. 
 
 The Python code can be found on my [github](https://github.com/mattmotoki/toxic-comment-classification). 
 
 #### Timing:
-The bulk of the calculation boils down to a vector matrix multiplication.  The naive implementation takes about 20 mins. 
-We can reduce this to about 4 mins by processing missing words in batches.  But, this is the perfect application to put on the GPU. Using PyTorch (and a 1080ti), we can get the timing down to about 1 min. 
+The bulk of the calculation boils down to a vector matrix multiplication.  The naive implementation takes about 20 mins. We can reduce this to about 4 mins by processing missing words in batches.  Using PyTorch (and a 1080ti), we can get the timing down to about 1 min. 
 
 #### Results:
 Here is a table of the scores for a single seed; here `toxic` refers to the 300d vectors trained locally using fastText. 
+
 
 | Model	| Embeddings | Private | Public | Local |
 |:------ |:---------- | ------- | ------ | ----- |
@@ -67,18 +67,22 @@ Here is a table of the scores for a single seed; here `toxic` refers to the 300d
 | CapsuleNet	| glove	| 0.9860 	| 0.9859	| 0.9899|
 | CapsuleNet	| lexvec	| 0.9855	| 0.9858	| 0.9898|
 | CapsuleNet	| toxic	| 0.9859	| 0.9863	| 0.9901|
+|  |
 | RNN Version 2	| fasttext	| 0.9856	| 0.9864	| 0.9904|
 | RNN Version 2	| glove	| 0.9858 	| 0.9863	| 0.9902|
 | RNN Version 2	| lexvec	| 0.9857	| 0.9859	| 0.9902|
 | RNN Version 2	| toxic	| 0.9851	| 0.9855	| 0.9906|
+|  |
 | RNN Version 1	| fasttext	| 0.9853	| 0.9859	| 0.9898|
 | RNN Version 1	| glove	| 0.9855	| 0.9861	| 0.9901|
 | RNN Version 1	| lexvec	| 0.9854	| 0.9857	| 0.9897|
 | RNN Version 1	| toxic	| 0.9856 | 0.9861	| 0.9903|
+|  |
 | 2 Layer CNN	| fasttext	| 0.9826	| 0.9835	| 0.9886|
 | 2 Layer CNN	| glove 	| 0.9827	| 0.9828	| 0.9883|
 | 2 Layer CNN	| lexvec	| 0.9824	| 0.9831	| 0.9880|
 | 2 Layer CNN	| toxic	| 0.9806	| 0.9789	| 0.9880|
+|  |
 | SVM with NB features	| NA	| 0.9813	| 0.9813	| 0.9863|
 
 <a name="footnote1"><sup>1</sup></a> This is assuming all word vectors are normalized so that the inner product is the same as the cosine similarity.  
