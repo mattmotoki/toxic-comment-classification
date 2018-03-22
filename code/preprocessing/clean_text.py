@@ -1,7 +1,7 @@
 import re
 import pandas as pd
-from toxic.text_utils import clean_text_advanced
 
+# text cleaning
 def clean_text(text):
     text = re.sub(r"\W+", " ", text.lower())
     text = bytes(text, encoding="utf-8")

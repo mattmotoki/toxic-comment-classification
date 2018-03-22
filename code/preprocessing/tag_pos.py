@@ -4,7 +4,10 @@ import regex
 import pandas as pd
 import numpy as np
 import multiprocessing as mp
-from toxic.text_utils import read_comments
+
+# helper function for reading text files
+def read_comments(file_name):
+  return [x for x in open(file_name, encoding='utf-8')]  
 
 # load data
 FILE_DIR = '../input'
@@ -21,7 +24,7 @@ def get_pos(x):
   _, pos = zip(*tags) 
   return ' '.join(pos)
 
-pool = mp.Pool(20)
+pool = mp.Pool(4)
 pos = pool.map(get_pos, text)
 pool.terminate()  
 
