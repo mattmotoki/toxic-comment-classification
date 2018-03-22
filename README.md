@@ -16,14 +16,14 @@ __Private LB: 0.9872, 33/4551__; Public LB: 0.9876, 45/4551
       * [GloVe: glove.840B.300d](https://nlp.stanford.edu/projects/glove/) 
       * [LexVec: lexvec.commoncrawl.300d.W.pos.vectors](https://github.com/alexandres/lexvec)
 
-#### Models: 
+#### Models (best private score shown): 
    - CapsuleNet    (*0.9860 private*,	0.9859 public)
    - RNN Version 1 (*0.9858 private*,	0.9863 public)
    - RNN Version 2 (*0.9856 private*,	0.9861 public)
-   - Two Layer CNN (*0.9855 private*,	0.9861 public)
+   - Two Layer CNN (*0.9826 private*,	0.9835 public)
    - NB-SVM (*0.9813 private*, 0.9813 public)
-
-#### Esembling: 
+	
+#### Ensembling (best private score shown):
    - Level 1a: Average 10 out-of-fold predictions (as high as *0.9860 private*, 0.9859 public)
    - Level 1b: Average models with different embeddings (as high as *0.9866 private*, 0.9871 public)
    - Level 2a: LightGBM Stacking (*0.9870 private*, 0.9874 public)
