@@ -10,11 +10,11 @@ The task was to classify online comments into 6 categories: `toxic`, `severve_to
 __Private LB: 0.9872, 33/4551__; Public LB: 0.9876, 45/4551
 
 #### Embeddings: 
-   - fastText embeddings trained locally on the competition data
+   - FastText embeddings trained locally on the competition data
    - Pretrained embeddings (with similiarity imputation): 
-      * [fastText: wiki.en.bin](https://fasttext.cc/docs/en/english-vectors.html)
-      * [GloVe: glove.840B.300d](https://nlp.stanford.edu/projects/glove/) 
-      * [LexVec: lexvec.commoncrawl.300d.W.pos.vectors](https://github.com/alexandres/lexvec)
+      * [FastText: wiki.en.bin](https://fastText.cc/docs/en/english-vectors.html)
+      * [GloVe: GloVe.840B.300d](https://nlp.stanford.edu/projects/glove/) 
+      * [LexVec: LexVec.commoncrawl.300d.W.pos.vectors](https://github.com/alexandres/lexvec)
 
 #### Models (best private score shown): 
    - CapsuleNet    (*0.9860 private*,	0.9859 public)
@@ -32,9 +32,9 @@ __Private LB: 0.9872, 33/4551__; Public LB: 0.9876, 45/4551
 ### Embedding Imputation Details:
 
 
-My main insight in this competition was how to handle out-of-vocabulary (OOV) words.  Replacing missing vectors with zeros or random numbers is suboptimal.  Using fastText's built-in OOV prediction instead of naive replacement increases the AUC by ~0.002.  For GloVe and LexVec embeddings, I replaced the missing embeddings with similar vectors. To do this, I first trained a fastText model on the data for this competition:
+My main insight in this competition was how to handle out-of-vocabulary (OOV) words.  Replacing missing vectors with zeros or random numbers is suboptimal.  Using FastText's built-in OOV prediction instead of naive replacement increases the AUC by ~0.002.  For GloVe and LexVec embeddings, I replaced the missing embeddings with similar vectors. To do this, I first trained a FastText model on the data for this competition:
 ```
-  fasttext skipgram -input "${INPUT_FILE}" -output "${OUTPUT_FILE}" \
+  FastText skipgram -input "${INPUT_FILE}" -output "${OUTPUT_FILE}" \
   -minCount 1 -neg 25 -thread 8 -dim 300
 ```
 The `-minCount 1` flag ensures that we get perfect recall; i.e., we get a vector for every word in our vocabulary.  We can now find the most similar vector in the intersection of the local vocabulary (from this competition) with the external vocabulary (from pretrained embeddings).  Here's the psuedo code to do that<sup>[1](#footnote1)</sup>:
@@ -52,38 +52,38 @@ for w in missing_words:
 
 return {w: external[w] for w in local_words}
 ```
-With this technique, GloVe performed just as well if not better than the fastText with OOV prediction; LexVec performed slightly worse but added valuable diversity to ensembles. 
+With this technique, GloVe performed just as well if not better than the FastText with OOV prediction; LexVec performed slightly worse but added valuable diversity to ensembles. 
 
 
 #### Timing:
 The bulk of the calculation boils down to a vector matrix multiplication.  The naive implementation takes about 20 mins. We can reduce this to about 4 mins by processing missing words in batches.  Using PyTorch (and a 1080ti), we can get the timing down to about 1 min. 
 
 #### Results:
-Here is a table of the scores for a single seed; here `toxic` refers to the 300d vectors trained locally using fastText. 
+Here is a table of the scores for a single seed; here "Toxic" refers to the 300d vectors trained locally using FastText. 
 
 
 | Model	| Embeddings | Private | Public | Local |
 |:------ |:---------- | ------- | ------ | ----- |
 |  |
-| CapsuleNet	| fasttext	| 0.9855	| 0.9867	| 0.9896|
-| CapsuleNet	| glove	| 0.9860 	| 0.9859	| 0.9899|
-| CapsuleNet	| lexvec	| 0.9855	| 0.9858	| 0.9898|
-| CapsuleNet	| toxic	| 0.9859	| 0.9863	| 0.9901|
+| CapsuleNet	| FastText	| 0.9855	| 0.9867	| 0.9896|
+| CapsuleNet	| GloVe	| 0.9860 	| 0.9859	| 0.9899|
+| CapsuleNet	| LexVec	| 0.9855	| 0.9858	| 0.9898|
+| CapsuleNet	| Toxic	| 0.9859	| 0.9863	| 0.9901|
 |  |
-| RNN Version 2	| fasttext	| 0.9856	| 0.9864	| 0.9904|
-| RNN Version 2	| glove	| 0.9858 	| 0.9863	| 0.9902|
-| RNN Version 2	| lexvec	| 0.9857	| 0.9859	| 0.9902|
-| RNN Version 2	| toxic	| 0.9851	| 0.9855	| 0.9906|
+| RNN Version 2	| FastText	| 0.9856	| 0.9864	| 0.9904|
+| RNN Version 2	| GloVe	| 0.9858 	| 0.9863	| 0.9902|
+| RNN Version 2	| LexVec	| 0.9857	| 0.9859	| 0.9902|
+| RNN Version 2	| Toxic	| 0.9851	| 0.9855	| 0.9906|
 |  |
-| RNN Version 1	| fasttext	| 0.9853	| 0.9859	| 0.9898|
-| RNN Version 1	| glove	| 0.9855	| 0.9861	| 0.9901|
-| RNN Version 1	| lexvec	| 0.9854	| 0.9857	| 0.9897|
-| RNN Version 1	| toxic	| 0.9856 | 0.9861	| 0.9903|
+| RNN Version 1	| FastText	| 0.9853	| 0.9859	| 0.9898|
+| RNN Version 1	| GloVe	| 0.9855	| 0.9861	| 0.9901|
+| RNN Version 1	| LexVec	| 0.9854	| 0.9857	| 0.9897|
+| RNN Version 1	| Toxic	| 0.9856 | 0.9861	| 0.9903|
 |  |
-| 2 Layer CNN	| fasttext	| 0.9826	| 0.9835	| 0.9886|
-| 2 Layer CNN	| glove 	| 0.9827	| 0.9828	| 0.9883|
-| 2 Layer CNN	| lexvec	| 0.9824	| 0.9831	| 0.9880|
-| 2 Layer CNN	| toxic	| 0.9806	| 0.9789	| 0.9880|
+| 2 Layer CNN	| FastText	| 0.9826	| 0.9835	| 0.9886|
+| 2 Layer CNN	| GloVe 	| 0.9827	| 0.9828	| 0.9883|
+| 2 Layer CNN	| LexVec	| 0.9824	| 0.9831	| 0.9880|
+| 2 Layer CNN	| Toxic	| 0.9806	| 0.9789	| 0.9880|
 |  |
 | SVM with NB features	| NA	| 0.9813	| 0.9813	| 0.9863|
 
