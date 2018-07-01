@@ -1,13 +1,17 @@
-## 33rd Place Solution Using Embedding Imputation
+## Kaggle - Toxic Comment Classification Challenge
 
-This is the writeup and code for the [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/discussion/52666).  
+* 33rd Place Solution 
+* Private LB: 0.9872, 33/4551
+* Public LB: 0.9876, 45/4551
+
+This is the writeup and code for the [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge) where I placed 33rd out of 4,551 teams.  For more information about my approach see my [discussion post](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/discussion/52666). 
 
 The task was to classify online comments into 6 categories: `toxic`, `severve_toxic`, `obscene`, `threat`, `insult`, `identity_hate`.  The competition metric was the average of the individual AUCs of each predicted class
 
 
 ### Summary of approach:
 
-__Private LB: 0.9872, 33/4551__; Public LB: 0.9876, 45/4551
+
 
 #### Embeddings: 
    - FastText embeddings trained locally on the competition data
